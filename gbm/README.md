@@ -1,4 +1,4 @@
-## A pure [rust](https://www.rust-lang.org) implementation of libgbm
+## A pure rust implementation of the [gbm crate](https://crates.io/crates/gbm)
 
 The Generic Buffer Manager
 
