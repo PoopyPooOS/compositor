@@ -1,0 +1,12 @@
+[package]
+name = "compositor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gbm = { path = "gbm", default-features = false, features = [
+    "import-egl",
+    "drm-support",
+] }
+dialoguer = "0.11.0"
+drm = "0.14.0"
