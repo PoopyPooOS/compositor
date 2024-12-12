@@ -8,9 +8,6 @@ use std::fmt;
 use std::io::{Error as IoError, Result as IoResult};
 use std::ops::{Deref, DerefMut};
 
-#[cfg(feature = "import-wayland")]
-use wayland_server::protocol::wl_buffer::WlBuffer;
-
 #[cfg(feature = "import-egl")]
 /// An `EGLImage` handle
 pub type EGLImage = *mut libc::c_void;
@@ -240,26 +237,6 @@ impl<T: AsFd> Device<T> {
                 usage.bits(),
             )
         };
-        if ptr.is_null() {
-            Err(IoError::last_os_error())
-        } else {
-            Ok(unsafe { BufferObject::new(ptr, self.ffi.downgrade()) })
-        }
-    }
-
-    /// Create a GBM buffer object from a wayland buffer
-    ///
-    /// This function imports a foreign [`WlBuffer`] object and creates a new GBM
-    /// buffer object for it.
-    /// This enables using the foreign object with a display API such as KMS.
-    ///
-    /// The GBM bo shares the underlying pixels but its life-time is
-    /// independent of the foreign object.
-    #[cfg(feature = "import-wayland")]
-    pub fn import_buffer_object_from_wayland<U: 'static>(&self, buffer: &WlBuffer, usage: BufferObjectFlags) -> IoResult<BufferObject<U>> {
-        use wayland_server::Resource;
-
-        let ptr = unsafe { ffi::gbm_bo_import(*self.ffi, ffi::GBM_BO_IMPORT_WL_BUFFER, buffer.id().as_ptr().cast(), usage.bits()) };
         if ptr.is_null() {
             Err(IoError::last_os_error())
         } else {

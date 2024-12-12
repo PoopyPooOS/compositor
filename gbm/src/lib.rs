@@ -95,9 +95,6 @@
 extern crate gbm_sys as ffi;
 extern crate libc;
 
-#[cfg(feature = "import-wayland")]
-extern crate wayland_server;
-
 #[cfg(feature = "drm-support")]
 extern crate drm;
 
