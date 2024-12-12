@@ -93,7 +93,6 @@
 #![deny(missing_docs)]
 
 extern crate gbm_sys as ffi;
-extern crate libc;
 
 #[cfg(feature = "drm-support")]
 extern crate drm;

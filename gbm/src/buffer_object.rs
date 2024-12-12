@@ -46,22 +46,22 @@ bitflags! {
     #[derive(Hash, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug)]
     pub struct BufferObjectFlags: u32 {
         /// Buffer is going to be presented to the screen using an API such as KMS
-        const SCANOUT      = ffi::gbm_bo_flags::GBM_BO_USE_SCANOUT as u32;
+        const SCANOUT      = 1;
         /// Buffer is going to be used as cursor
-        const CURSOR       = ffi::gbm_bo_flags::GBM_BO_USE_CURSOR as u32;
+        const CURSOR       = 2;
         /// Buffer is going to be used as cursor (deprecated)
         #[deprecated = "Use CURSOR instead"]
-        const CURSOR_64X64 = ffi::gbm_bo_flags::GBM_BO_USE_CURSOR_64X64 as u32;
+        const CURSOR_64X64 = 2;
         /// Buffer is to be used for rendering - for example it is going to be used
         /// as the storage for a color buffer
-        const RENDERING    = ffi::gbm_bo_flags::GBM_BO_USE_RENDERING as u32;
+        const RENDERING    = 4;
         /// Buffer can be used for [`BufferObject::write()`].  This is guaranteed to work
         /// with [`Self::CURSOR`], but may not work for other combinations.
-        const WRITE        = ffi::gbm_bo_flags::GBM_BO_USE_WRITE as u32;
+        const WRITE        = 8;
         /// Buffer is linear, i.e. not tiled.
-        const LINEAR       = ffi::gbm_bo_flags::GBM_BO_USE_LINEAR as u32;
+        const LINEAR       = 16;
         /// Buffer is protected
-        const PROTECTED    = ffi::gbm_bo_flags::GBM_BO_USE_PROTECTED as u32;
+        const PROTECTED    = 32;
     }
 }
 
