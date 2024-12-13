@@ -5,10 +5,10 @@ use drm::{
     control::{self, atomic, connector, crtc, property, AtomicCommitFlags, Device as ControlDevice},
     ClientCapability, Device,
 };
-use gbm::BufferObjectFlags;
 use std::{fs, thread, time::Duration};
 
 mod card;
+mod modeset;
 
 #[allow(clippy::too_many_lines)]
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -62,7 +62,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut map = card.map_dumb_buffer(&mut db).expect("Could not map dumbbuffer");
 
         for b in map.as_mut() {
-            *b = 0;
+            *b = 0xFF / 2;
         }
     }
 
@@ -141,35 +141,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     card.atomic_commit(AtomicCommitFlags::ALLOW_MODESET, atomic_req)
         .expect("Failed to set display mode");
 
-    let gbm = gbm::Device::new(&card).expect("Failed to create gbm device");
-    let mut bo = gbm
-        .create_buffer_object::<()>(
-            mode.size().0.into(),
-            mode.size().1.into(),
-            gbm::Format::Xrgb8888,
-            BufferObjectFlags::SCANOUT | BufferObjectFlags::RENDERING,
-        )
-        .expect("Failed to create gbm buffer object");
+    // let gbm = gbm::Device::new(&card).expect("Failed to create gbm device");
+    // let mut bo = gbm
+    //     .create_buffer_object::<()>(
+    //         mode.size().0.into(),
+    //         mode.size().1.into(),
+    //         gbm::Format::Xrgb8888,
+    //         BufferObjectFlags::SCANOUT | BufferObjectFlags::RENDERING,
+    //     )
+    //     .expect("Failed to create gbm buffer object");
 
-    let buffer = {
-        let mut buffer = Vec::new();
-        for i in 0..mode.size().0 {
-            for _ in 0..mode.size().1 {
-                buffer.push(if i % 2 == 0 { 0 } else { 255 });
-            }
-        }
-        buffer
-    };
+    // let buffer = {
+    //     let mut buffer = Vec::new();
+    //     for i in 0..mode.size().0 {
+    //         for _ in 0..mode.size().1 {
+    //             buffer.push(if i % 2 == 0 { 0 } else { 255 });
+    //         }
+    //     }
+    //     buffer
+    // };
 
-    bo.write(&buffer)??;
+    // bo.write(&buffer)?;
 
-    let gbm_fb = gbm.add_framebuffer(&bo, 32, 32)?;
-    gbm.set_crtc(crtc.handle(), Some(gbm_fb), (0, 0), &[con.handle()], Some(mode))
-        .expect("Failed to set gbm crtc");
+    // let gbm_fb = gbm.add_framebuffer(&bo, 32, 32)?;
+    // gbm.set_crtc(crtc.handle(), Some(gbm_fb), (0, 0), &[con.handle()], Some(mode))
+    //     .expect("Failed to set gbm crtc");
 
     thread::sleep(Duration::from_secs_f64(3.5));
 
-    gbm.destroy_framebuffer(gbm_fb)?;
+    // gbm.destroy_framebuffer(gbm_fb)?;
     card.destroy_dumb_buffer(db)?;
     card.destroy_framebuffer(fb)?;
 
